@@ -7,12 +7,40 @@ class User(AbstractUser):
 
 class Plant(models.Model):
     species = models.CharField(max_length=35)
+    startdate = models.DateField()
+    showonlist = models.BooleanField(default=True)
 
-class Weight(models.Model):
+
+#No auto dates, since the date will be simulated
+#To be filled with simulator or admin control panel
+class Height(models.Model):
     subject = models.ForeignKey(Plant, on_delete=models.CASCADE, related_name="weight")
-    mass = models.DecimalField(max_digits=5, decimal_places=3)
+    height = models.DecimalField(max_digits=6, decimal_places=3)
+    measuredate = models.DateField()
+
+class LeafColors(models.Model):
+    subject = models.ForeignKey(Plant, on_delete=models.CASCADE)
+    colorpattern = models.CharField(max_length=35)  #will be url
+    measuredate = models.DateField()
+
+class DiseaseList(models.Model):
+    name = models.CharField(max_length=35)
+    description = models.CharField(max_length=350)
+
+class Diseased(models.Model):
+    subject = models.ForeignKey(Plant, on_delete=models.CASCADE, related_name="disease")
+    disease = models.ForeignKey(DiseaseList, on_delete=models.CASCADE)
+    detectiondate = models.DateField()
+
+#To be filled with user interface
+class Harvest(models.Model):
+    subject = models.ForeignKey(Plant, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
+    netweight = models.DecimalField(max_digits=5, decimal_places=3)
     date = models.DateField()
 
-class Fruits(models.Model):
-    subject = models.ForeignKey(Plant, on_delete=models.CASCADE, related_name="weight")
+class PlantLog(models.Model):
+    subject = models.ForeignKey(Plant, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    report = models.CharField(max_length=350)
     date = models.DateField()
